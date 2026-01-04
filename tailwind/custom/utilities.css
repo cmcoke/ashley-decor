@@ -1,0 +1,23 @@
+/**
+ * Custom styles to immediately follow Tailwind’s `utilities` layer
+ *
+ * Add your own utility classes to this theme. Complex utility classes should
+ * be added using Tailwind’s plugin system:
+ *
+ * https://tailwindcss.com/docs/adding-custom-styles#adding-custom-utilities
+ */
+@theme {
+	--font-heading: "Kosi-heading";
+}
+
+@theme {
+	--font-paragraph: "Kosi-paragraph";
+}
+
+@theme {
+	--color-theme-black: rgb(17, 17, 17);
+}
+
+@theme {
+	--color-theme-grey: #666666;
+}
