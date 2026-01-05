@@ -9,3 +9,7 @@
 body {
 	@apply bg-background text-foreground font-sans;
 }
+
+.wrapper {
+	@apply grid grid-cols-[minmax(6rem,1fr)_repeat(8,minmax(min-content,10.15625rem))_minmax(6rem,1fr)];
+}

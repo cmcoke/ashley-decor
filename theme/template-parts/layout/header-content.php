@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Template part for displaying the header content
  *
@@ -9,39 +10,14 @@
 
 ?>
 
-<header id="masthead">
-
-	<div>
-		<?php
-		if ( is_front_page() ) :
-			?>
-			<h1><?php bloginfo( 'name' ); ?></h1>
-			<?php
-		else :
-			?>
-			<p><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></p>
-			<?php
-		endif;
-
-		$ashley_decor_description = get_bloginfo( 'description', 'display' );
-		if ( $ashley_decor_description || is_customize_preview() ) :
-			?>
-			<p><?php echo $ashley_decor_description; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
-		<?php endif; ?>
-	</div>
-
-	<nav id="site-navigation" aria-label="<?php esc_attr_e( 'Main Navigation', 'ashley-decor' ); ?>">
-		<button aria-controls="primary-menu" aria-expanded="false"><?php esc_html_e( 'Primary Menu', 'ashley-decor' ); ?></button>
-
-		<?php
-		wp_nav_menu(
-			array(
-				'theme_location' => 'menu-1',
-				'menu_id'        => 'primary-menu',
-				'items_wrap'     => '<ul id="%1$s" class="%2$s" aria-label="submenu">%3$s</ul>',
-			)
-		);
-		?>
-	</nav><!-- #site-navigation -->
-
-</header><!-- #masthead -->
+<header class="h-[100px] wrapper items-center">
+  <div class="col-start-1 col-end-2 place-self-center">
+    <a href="<?php echo esc_url(site_url()); ?>">
+      <img src="<?php echo get_theme_file_uri('images/logo.webp') ?>" alt="logo" class="max-w-[5rem] h-auto">
+    </a>
+  </div>
+  <div class="col-start-10 col-end-11 place-self-center">
+    <img src="<?php echo get_theme_file_uri('images/shopping-bag.webp') ?>" alt="shopping bag"
+      class="max-w-[1.5rem] h-auto cursor-pointer">
+  </div>
+</header>
