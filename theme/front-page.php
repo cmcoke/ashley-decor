@@ -3,7 +3,7 @@
 <main>
 
   <!-- hero -->
-  <div class="min-h-[calc(100vh_-_100px)] wrapper">
+  <div class="wrapper min-h-[calc(100vh_-_100px)]">
 
     <div class="col-start-1 sm:col-start-2 col-end-11 sm:col-end-10 place-self-center">
 
@@ -29,16 +29,118 @@
 
   </div>
 
-  <div class="bg-[#261447] text-white min-h-[1272px]">
-    products layout 1
+  <div class="wrapper min-h-[1272px]">
+
+    <div class="col-start-1 col-end-11 lg:col-start-1 lg:col-end-6 row-start-1 row-end-2 lg:row-start-1 lg:row-end-3">
+      <a href="" class="relative block w-full h-full">
+        <img src="<?php echo get_theme_file_uri('images/product_1.webp') ?>" alt="product 1"
+          class="w-full h-full object-cover">
+        <div class="absolute bottom-3 left-4">
+          <p class="font-paragraph font-bold uppercase text-[15px]">Cacti</p>
+          <p class="font-paragraph  text-[14px] text-theme-grey">$20.00</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-2 row-end-3 lg:row-start-1 lg:row-end-2">
+      <a href="" class="relative block w-full h-full">
+        <img src="<?php echo get_theme_file_uri('images/product_2.webp') ?>" alt="product 2"
+          class="w-full h-full object-cover">
+        <div class="absolute bottom-3 left-4">
+          <p class="font-paragraph font-bold uppercase text-[15px]">Wall Clock</p>
+          <p class="font-paragraph  text-[14px] text-theme-grey">$15.00</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-3 row-end-4 lg:row-start-2 lg:row-end-3">
+      <a href="" class="relative block w-full h-full">
+        <img src="<?php echo get_theme_file_uri('images/product_3.webp') ?>" alt="product 3"
+          class="w-full h-full object-cover">
+        <div class="absolute bottom-3 left-4">
+          <p class="font-paragraph font-bold uppercase text-[15px]">Boho Lamp</p>
+          <p class="font-paragraph  text-[14px] text-theme-grey">$20.00</p>
+        </div>
+      </a>
+
+    </div>
+
   </div>
 
-  <div class="bg-[#7BC950] text-white min-h-[1272px]">
-    products layout 2
+  <div class="wrapper min-h-[1272px]">
+
+    <div class="col-start-1 col-end-11 lg:col-start-1 lg:col-end-6 row-start-1 row-end-2 lg:row-start-1 lg:row-end-3">
+      <a href="" class="relative block w-full h-full">
+        <img src="<?php echo get_theme_file_uri('images/product_4.webp') ?>" alt="product 4"
+          class="w-full h-full object-cover">
+        <div class="absolute bottom-3 left-4">
+          <p class="font-paragraph font-bold uppercase text-[15px]">Wood Chair</p>
+          <p class="font-paragraph  text-[14px] text-theme-grey">$55.00</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-2 row-end-3 lg:row-start-1 lg:row-end-2">
+      <a href="" class="relative block w-full h-full">
+        <img src="<?php echo get_theme_file_uri('images/product_5.webp') ?>" alt="product 5"
+          class="w-full h-full object-cover">
+        <div class="absolute bottom-3 left-4">
+          <p class="font-paragraph font-bold uppercase text-[15px]">Wood Plate</p>
+          <p class="font-paragraph  text-[14px] text-theme-grey">$23.00</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-3 row-end-4 lg:row-start-2 lg:row-end-3">
+      <a href="" class="relative block w-full h-full">
+        <img src="<?php echo get_theme_file_uri('images/product_6.webp') ?>" alt="product 6"
+          class="w-full h-full object-cover">
+        <div class="absolute bottom-3 left-4">
+          <p class="font-paragraph font-bold uppercase text-[15px]">Tea Pot</p>
+          <p class="font-paragraph  text-[14px] text-theme-grey">$20.00</p>
+        </div>
+      </a>
+
+    </div>
+
   </div>
 
-  <div class="bg-[#261447] text-white min-h-[1272px]">
-    products layout 1
+  <div class="wrapper min-h-[1272px]">
+
+    <div class="col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-1 row-end-2 lg:row-start-1 lg:row-end-3">
+      <a href="" class="relative block w-full h-full">
+        <img src="<?php echo get_theme_file_uri('images/product_7.webp') ?>" alt="product 7"
+          class="w-full h-full object-cover">
+        <div class="absolute bottom-3 left-4">
+          <p class="font-paragraph font-bold uppercase text-[15px]">Interior Lamp</p>
+          <p class="font-paragraph  text-[14px] text-theme-grey">$35.00</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-start-1 col-end-11 lg:col-start-1 lg:col-end-6 row-start-2 row-end-3 lg:row-start-1 lg:row-end-2">
+      <a href="" class="relative block w-full h-full">
+        <img src="<?php echo get_theme_file_uri('images/product_8.webp') ?>" alt="product 8"
+          class="w-full h-full object-cover">
+        <div class="absolute bottom-3 left-4">
+          <p class="font-paragraph font-bold uppercase text-[15px]">Orange Light</p>
+          <p class="font-paragraph  text-[14px] text-theme-grey">$35.00</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-start-1 col-end-11 lg:col-start-1 lg:col-end-6 row-start-3 row-end-4 lg:row-start-2 lg:row-end-3">
+      <a href="" class="relative block w-full h-full">
+        <img src="<?php echo get_theme_file_uri('images/product_9.webp') ?>" alt="product 9"
+          class="w-full h-full object-cover">
+        <div class="absolute bottom-3 left-4">
+          <p class="font-paragraph font-bold uppercase text-[15px]">Wood Basket</p>
+          <p class="font-paragraph  text-[14px] text-theme-grey">$20.00</p>
+        </div>
+      </a>
+
+    </div>
+
   </div>
 
   <div class="bg-[#F97068] text-white min-h-[636px]">
