@@ -10,6 +10,27 @@ body {
 	@apply bg-background text-foreground font-sans;
 }
 
+/* grid */
 .wrapper {
 	@apply grid grid-cols-[minmax(6rem,1fr)_repeat(8,minmax(min-content,10.15625rem))_minmax(6rem,1fr)];
+}
+
+/* 1. The Container: Force it to be a single row with no gaps */
+.single-product form.cart {
+	@apply mt-11 inline-flex w-fit items-stretch gap-0! overflow-hidden rounded-xl border border-gray-300;
+}
+
+/* 2. The Quantity: Remove its own border and internal spacing */
+.single-product .quantity {
+	@apply m-0 flex items-center border-none bg-white px-4 py-3!;
+	/* We remove the border here because the parent form.cart provides it */
+}
+
+.single-product .quantity input.qty {
+	@apply w-12 border-none p-0 text-center text-xl font-medium focus:ring-0!;
+}
+
+/* 3. The Button: Remove rounded corners so it sits flush against the quantity */
+.single-product .single_add_to_cart_button.button {
+	@apply bg-theme-black hover:bg-theme-orange m-0 flex h-auto items-center! rounded-none border-none px-8 py-3 font-medium text-white transition-colors duration-300;
 }

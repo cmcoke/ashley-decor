@@ -29,120 +29,85 @@
 
   </div>
 
-  <div class="wrapper min-h-[1272px]">
+  <!-- products -->
+  <?php
+  // 1. Setup the Product Query
+  $args = array(
+    'post_type'      => 'product',
+    'posts_per_page' => 9,
+    'orderby'        => 'menu_order', // Look at the manual order number
+    'order'          => 'ASC',        // Start from 1 and go up
+  );
+  $loop = new WP_Query($args);
+  $counter = 1;
 
-    <div class="col-start-1 col-end-11 lg:col-start-1 lg:col-end-6 row-start-1 row-end-2 lg:row-start-1 lg:row-end-3">
-      <a href="" class="relative block w-full h-full">
-        <img src="<?php echo get_theme_file_uri('images/product_1.webp') ?>" alt="product 1"
-          class="w-full h-full object-cover">
-        <div class="absolute bottom-3 left-4">
-          <h5 class="font-heading font-bold uppercase text-[14px] tracking-[.2em]">Cacti</h5>
-          <span class="font-heading  text-[14px] font-light text-theme-orange block">$20.00</span>
-        </div>
-      </a>
-    </div>
+  if ($loop->have_posts()) :
+    while ($loop->have_posts()) : $loop->the_post();
+      global $product;
 
-    <div class="col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-2 row-end-3 lg:row-start-1 lg:row-end-2">
-      <a href="" class="relative block w-full h-full">
-        <img src="<?php echo get_theme_file_uri('images/product_2.webp') ?>" alt="product 2"
-          class="w-full h-full object-cover">
-        <div class="absolute bottom-3 left-4">
-          <h5 class="font-heading font-bold uppercase text-[14px] tracking-[.2em]">Wall Clock</h5>
-          <span class="font-heading  text-[14px] font-light text-theme-orange block">$15.00</span>
-        </div>
-      </a>
-    </div>
+      // 2. Open a new wrapper every 3 products
+      if ($counter == 1 || $counter == 4 || $counter == 7) {
+        echo '<div class="wrapper min-h-[1272px]">';
+      }
 
-    <div class="col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-3 row-end-4 lg:row-start-2 lg:row-end-3">
-      <a href="" class="relative block w-full h-full">
-        <img src="<?php echo get_theme_file_uri('images/product_3.webp') ?>" alt="product 3"
-          class="w-full h-full object-cover">
-        <div class="absolute bottom-3 left-4">
-          <h5 class="font-heading font-bold uppercase text-[14px] tracking-[.2em]">Boho Lamp</h5>
-          <span class="font-heading  text-[14px] font-light text-theme-orange block">$20.00</span>
-        </div>
-      </a>
+      // 3. Define the specific Tailwind Grid classes based on the product position
+      $grid_classes = '';
 
-    </div>
+      // Item 1 & 4: Large on Left
+      if ($counter == 1 || $counter == 4) {
+        $grid_classes = 'col-start-1 col-end-11 lg:col-start-1 lg:col-end-6 row-start-1 row-end-2 lg:row-start-1 lg:row-end-3';
+      }
+      // Item 2 & 5: Small Top Right
+      elseif ($counter == 2 || $counter == 5) {
+        $grid_classes = 'col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-2 row-end-3 lg:row-start-1 lg:row-end-2';
+      }
+      // Item 3 & 6: Small Bottom Right
+      elseif ($counter == 3 || $counter == 6) {
+        $grid_classes = 'col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-3 row-end-4 lg:row-start-2 lg:row-end-3';
+      }
+      // Item 7: Large on Right (The flip happens here)
+      elseif ($counter == 7) {
+        $grid_classes = 'col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-1 row-end-2 lg:row-start-1 lg:row-end-3';
+      }
+      // Item 8: Small Top Left
+      elseif ($counter == 8) {
+        $grid_classes = 'col-start-1 col-end-11 lg:col-start-1 lg:col-end-6 row-start-2 row-end-3 lg:row-start-1 lg:row-end-2';
+      }
+      // Item 9: Small Bottom Left
+      elseif ($counter == 9) {
+        $grid_classes = 'col-start-1 col-end-11 lg:col-start-1 lg:col-end-6 row-start-3 row-end-4 lg:row-start-2 lg:row-end-3';
+      }
+  ?>
 
-  </div>
+      <div class="<?php echo $grid_classes; ?>">
+        <a href="<?php the_permalink(); ?>" class="relative block w-full h-full">
+          <?php
+          if (has_post_thumbnail()) {
+            the_post_thumbnail('full', ['class' => 'w-full h-full object-cover']);
+          }
+          ?>
+          <div class="absolute bottom-3 left-4">
+            <h5 class="font-heading font-bold uppercase text-[14px] tracking-[.2em]"><?php the_title(); ?></h5>
+            <span class="font-heading text-[14px] font-light text-theme-orange block">
+              <?php echo $product->get_price_html(); ?>
+            </span>
+          </div>
+        </a>
+      </div>
 
-  <div class="wrapper min-h-[1272px]">
+  <?php
+      // 4. Close the wrapper every 3 products
+      if ($counter == 3 || $counter == 6 || $counter == 9) {
+        echo '</div>';
+      }
 
-    <div class="col-start-1 col-end-11 lg:col-start-1 lg:col-end-6 row-start-1 row-end-2 lg:row-start-1 lg:row-end-3">
-      <a href="" class="relative block w-full h-full">
-        <img src="<?php echo get_theme_file_uri('images/product_4.webp') ?>" alt="product 4"
-          class="w-full h-full object-cover">
-        <div class="absolute bottom-3 left-4">
-          <h5 class="font-heading font-bold uppercase text-[14px] tracking-[.2em]">Wood Chair</h5>
-          <span class="font-heading  text-[14px] font-light text-theme-orange block">$55.00</span>
-        </div>
-      </a>
-    </div>
+      $counter++;
+    endwhile;
+    wp_reset_postdata();
+  endif;
+  ?>
 
-    <div class="col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-2 row-end-3 lg:row-start-1 lg:row-end-2">
-      <a href="" class="relative block w-full h-full">
-        <img src="<?php echo get_theme_file_uri('images/product_5.webp') ?>" alt="product 5"
-          class="w-full h-full object-cover">
-        <div class="absolute bottom-3 left-4">
-          <h5 class="font-heading font-bold uppercase text-[14px] tracking-[.2em]">Wood Plate</h5>
-          <span class="font-heading  text-[14px] font-light text-theme-orange block">$23.00</span>
-        </div>
-      </a>
-    </div>
-
-    <div class="col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-3 row-end-4 lg:row-start-2 lg:row-end-3">
-      <a href="" class="relative block w-full h-full">
-        <img src="<?php echo get_theme_file_uri('images/product_6.webp') ?>" alt="product 6"
-          class="w-full h-full object-cover">
-        <div class="absolute bottom-3 left-4">
-          <h5 class="font-heading font-bold uppercase text-[14px] tracking-[.2em]">Tea Pot</h5>
-          <span class="font-heading  text-[14px] font-light text-theme-orange block">$20.00</span>
-        </div>
-      </a>
-
-    </div>
-
-  </div>
-
-  <div class="wrapper min-h-[1272px]">
-
-    <div class="col-start-1 col-end-11 lg:col-start-6 lg:col-end-11 row-start-1 row-end-2 lg:row-start-1 lg:row-end-3">
-      <a href="" class="relative block w-full h-full">
-        <img src="<?php echo get_theme_file_uri('images/product_7.webp') ?>" alt="product 7"
-          class="w-full h-full object-cover">
-        <div class="absolute bottom-3 left-4">
-          <h5 class="font-heading font-bold uppercase text-[14px] tracking-[.2em]">Interior Lamp</h5>
-          <span class="font-heading  text-[14px] font-light text-theme-orange block">$35.00</span>
-        </div>
-      </a>
-    </div>
-
-    <div class="col-start-1 col-end-11 lg:col-start-1 lg:col-end-6 row-start-2 row-end-3 lg:row-start-1 lg:row-end-2">
-      <a href="" class="relative block w-full h-full">
-        <img src="<?php echo get_theme_file_uri('images/product_8.webp') ?>" alt="product 8"
-          class="w-full h-full object-cover">
-        <div class="absolute bottom-3 left-4">
-          <h5 class="font-heading font-bold uppercase text-[14px] tracking-[.2em]">Orange Light</h5>
-          <span class="font-heading  text-[14px] font-light text-theme-orange block">$35.00</span>
-        </div>
-      </a>
-    </div>
-
-    <div class="col-start-1 col-end-11 lg:col-start-1 lg:col-end-6 row-start-3 row-end-4 lg:row-start-2 lg:row-end-3">
-      <a href="" class="relative block w-full h-full">
-        <img src="<?php echo get_theme_file_uri('images/product_9.webp') ?>" alt="product 9"
-          class="w-full h-full object-cover">
-        <div class="absolute bottom-3 left-4">
-          <h5 class="font-heading font-bold uppercase text-[14px] tracking-[.2em]">Wood Basket</h5>
-          <span class="font-heading  text-[14px] font-light text-theme-orange block">$20.00</span>
-        </div>
-      </a>
-
-    </div>
-
-  </div>
-
+  <!-- newsletter -->
   <div class="wrapper py-[10rem]">
 
     <div class="col-start-1 col-end-11 lg:col-start-2 lg:col-end-10 place-self-center">
