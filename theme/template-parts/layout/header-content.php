@@ -27,10 +27,15 @@
         <img src="<?php echo get_theme_file_uri('images/shopping-bag.webp') ?>" alt="shopping bag"
           class="max-w-[1.5rem] h-auto cursor-pointer">
 
-        <?php if (WC()->cart->get_cart_contents_count() > 0) : ?>
+        <?php
+        $count = WC()->cart->get_cart_contents_count();
+        if ($count > 0) :
+          // Logic: if count is greater than 10, show 10+, otherwise show the number
+          $display_count = ($count > 10) ? '10+' : $count;
+        ?>
         <span
-          class="absolute -bottom-1 -right-1 bg-theme-orange text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white">
-          <?php echo WC()->cart->get_cart_contents_count(); ?>
+          class="absolute -bottom-3 -right-3 bg-theme-orange text-white text-[10px] font-bold px-1 py-0.5 rounded-full leading-none min-w-[22px] h-[22px] flex items-center justify-center border-2 border-white">
+          <?php echo $display_count; ?>
         </span>
         <?php endif; ?>
       </div>

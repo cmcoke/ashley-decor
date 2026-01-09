@@ -149,7 +149,13 @@ add_action('widgets_init', 'ashley_decor_widgets_init');
 function ashley_decor_scripts()
 {
   wp_enqueue_style('ashley-decor-style', get_stylesheet_uri(), array(), ASHLEY_DECOR_VERSION);
-  wp_enqueue_script('ashley-decor-script', get_template_directory_uri() . '/js/script.min.js', array(), ASHLEY_DECOR_VERSION, true);
+  wp_enqueue_script('ashley-decor-script', get_template_directory_uri() . '/js/script.min.js', array('jquery'), ASHLEY_DECOR_VERSION, true);
+
+  // Pass the theme directory URL to your JS file
+  wp_localize_script('ashley-decor-script', 'ashleyData', array(
+    'themeUrl' => get_template_directory_uri(),
+    'ajax_url' => admin_url('admin-ajax.php'),
+  ));
 
   if (is_singular() && comments_open() && get_option('thread_comments')) {
     wp_enqueue_script('comment-reply');
@@ -242,58 +248,114 @@ function ashley_decor_add_woocommerce_support()
 add_action('after_setup_theme', 'ashley_decor_add_woocommerce_support');
 
 /**
+ * Disable all stylesheets for Woocommerce
+ */
+add_filter('woocommerce_enqueue_styles', '__return_empty_array');
+
+/**
  * Show cart contents / total Ajax
  */
 function woocommerce_header_add_to_cart_fragment($fragments)
 {
   ob_start();
   $count = WC()->cart->get_cart_contents_count();
+  // Apply the same 10+ logic here
+  $display_count = ($count > 10) ? '10+' : $count;
 ?>
-  <a class="cart-customlocation block" href="<?php echo esc_url(wc_get_cart_url()); ?>">
-    <div class="relative inline-block">
-      <img src="<?php echo get_theme_file_uri('images/shopping-bag.webp') ?>" alt="shopping bag"
-        class="max-w-[1.5rem] h-auto cursor-pointer">
-      <?php if ($count > 0) : ?>
-        <span
-          class="absolute -bottom-1 -right-1 bg-black text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white">
-          <?php echo $count; ?>
-        </span>
-      <?php endif; ?>
-    </div>
-  </a>
-  <?php
+<a class="cart-customlocation block" href="<?php echo esc_url(wc_get_cart_url()); ?>">
+  <div class="relative inline-block">
+    <img src="<?php echo get_theme_file_uri('images/shopping-bag.webp') ?>" alt="shopping bag"
+      class="max-w-[1.5rem] h-auto cursor-pointer">
+    <?php if ($count > 0) : ?>
+    <span
+      class="absolute -bottom-1 -right-1 bg-theme-orange text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white">
+      <?php echo $display_count; ?>
+    </span>
+    <?php endif; ?>
+  </div>
+</a>
+<?php
   $fragments['a.cart-customlocation'] = ob_get_clean();
 
-  // ADD THIS: Update the mini-cart drawer content
-  ob_start();
-  ?>
-  <div id="mini-cart-content" class="widget_shopping_cart_content">
-    <?php woocommerce_mini_cart(); ?>
-  </div>
-<?php
-  $fragments['#mini-cart-content'] = ob_get_clean();
-
+  // ... (rest of your mini-cart-content fragment code remains the same)
   return $fragments;
 }
 add_filter('woocommerce_add_to_cart_fragments', 'woocommerce_header_add_to_cart_fragment');
 
-// Customizing the WooCommerce Add to Cart button class
-add_filter('woocommerce_loop_add_to_cart_link', 'add_class_to_cart_button', 10, 2);
-function add_class_to_cart_button($html, $product)
+/**
+ * Replace static mini-cart quantity with an input field
+ */
+add_filter('woocommerce_widget_cart_item_quantity', 'ashley_decor_mini_cart_quantity_input', 10, 3);
+function ashley_decor_mini_cart_quantity_input($html, $cart_item, $cart_item_key)
 {
-  // You can inject Tailwind classes here if needed, 
-  // but for single-product pages, CSS is often easier:
+  $_product = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key);
+
+  if ($_product && $_product->is_visible()) {
+    // 1. Get the raw price (numeric) and currency symbol
+    $price = $_product->get_price();
+    $currency_symbol = get_woocommerce_currency_symbol();
+
+    // 2. Generate the +/- quantity controls
+    $input = woocommerce_quantity_input(array(
+      'input_value' => $cart_item['quantity'],
+      'max_value'   => $_product->get_max_purchase_quantity(),
+      'min_value'   => '0',
+    ), $_product, false);
+
+    // 3. Return formatted HTML
+    // This puts the price above the +/- buttons but under the name
+    return sprintf(
+      '<div class="mini-cart-item-meta mt-1">
+                <span class="mini-cart-item-price block text-sm text-gray-600 mb-2 font-heading">
+                    Price: %s%s
+                </span>
+                <div class="mini-cart-qty font-heading" data-item-key="%s">
+                    %s
+                </div>
+            </div>',
+      $currency_symbol,
+      number_format($price, 2),
+      $cart_item_key,
+      $input
+    );
+  }
+
   return $html;
 }
 
 
-/**
- * Customize the quantity input to include Plus/Minus buttons
- */
-add_filter('woocommerce_quantity_input_get_main_form_wrapper_classes', function ($classes) {
-  return array_merge($classes, array('flex', 'items-center', 'gap-4'));
-});
+add_action('wp_ajax_qty_cart', 'ashley_decor_ajax_qty_cart');
+add_action('wp_ajax_nopriv_qty_cart', 'ashley_decor_ajax_qty_cart');
 
-// Note: If you prefer to keep it simple, the CSS above will make the 
-// standard input look great. If you want the clickable +/- images, 
-// let me know and I can provide the JavaScript to inject them!
+function ashley_decor_ajax_qty_cart()
+{
+  // Basic security check (optional but recommended)
+  if (!isset($_POST['hash']) || !isset($_POST['quantity'])) {
+    wp_send_json_error('Missing data');
+  }
+
+  $cart_item_key = sanitize_text_field($_POST['hash']);
+  $quantity = intval($_POST['quantity']);
+
+  // 1. Update the quantity or remove the item
+  if ($quantity <= 0) {
+    WC()->cart->remove_cart_item($cart_item_key);
+  } else {
+    WC()->cart->set_quantity($cart_item_key, $quantity);
+  }
+
+  // 2. FORCE a recalculation of totals
+  WC()->cart->calculate_totals();
+
+  // 3. Manually trigger the fragment update logic
+  // This ensures the subtotal and item list reflect the changes above
+  $fragments = apply_filters('woocommerce_add_to_cart_fragments', array());
+
+  // Fallback: If for some reason the filter above is empty, get standard fragments
+  if (empty($fragments)) {
+    $fragments = WC_AJAX::get_refreshed_fragments();
+  }
+
+  wp_send_json($fragments);
+  wp_die();
+}

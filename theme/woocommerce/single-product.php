@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The Template for displaying all single products
  *
@@ -9,7 +10,7 @@ get_header();
 
 // Start the Loop
 while (have_posts()) : the_post();
-    global $product; // Access the WooCommerce product object
+  global $product; // Access the WooCommerce product object
 ?>
 
 <main class="single-product-main">
@@ -18,8 +19,8 @@ while (have_posts()) : the_post();
     <div class="col-start-1 col-end-11 lg:col-start-1 lg:col-end-6">
       <?php if (has_post_thumbnail()) : ?>
       <?php the_post_thumbnail('full', [
-                    'class' => 'w-full h-full object-cover shadow-sm'
-                ]); ?>
+            'class' => 'w-full h-full object-cover shadow-sm'
+          ]); ?>
       <?php else : ?>
       <img src="<?php echo esc_url(wc_placeholder_img_src('full')); ?>" alt="Placeholder"
         class="w-full h-auto object-cover">
@@ -29,7 +30,7 @@ while (have_posts()) : the_post();
     <div class="col-start-1 col-end-11 lg:col-start-6 lg:col-end-10 place-self-center my-11 lg:my-0 lg:pl-12">
 
       <div class="px-4">
-        <a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>" class="relative font-paragraph text-theme-grey transition-colors duration-300 hover:text-theme-orange 
+        <a href="<?php echo esc_url(site_url()); ?>" class="relative font-paragraph text-theme-grey transition-colors duration-300 hover:text-theme-orange 
                           after:content-[''] after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:bg-theme-orange 
                           after:w-0 hover:after:w-full after:transition-all after:duration-300">
           Back to products
@@ -64,12 +65,12 @@ while (have_posts()) : the_post();
 
         <div class="mt-10 product-actions-container">
           <?php
-                    /**
-                     * Hook: woocommerce_template_single_add_to_cart
-                     * Handles quantity input, variation selection, and the "Add to Cart" button.
-                     */
-                    woocommerce_template_single_add_to_cart();
-                    ?>
+            /**
+             * Hook: woocommerce_template_single_add_to_cart
+             * Handles quantity input, variation selection, and the "Add to Cart" button.
+             */
+            woocommerce_template_single_add_to_cart();
+            ?>
         </div>
 
         <div class="mt-6 pt-6 border-t border-gray-100 text-xs uppercase tracking-widest text-gray-400 font-paragraph">
@@ -108,12 +109,12 @@ while (have_posts()) : the_post();
       <div id="reviews-panel" class="tab-panel hidden">
         <div class="reviews-container">
           <?php
-                    if (comments_open()) {
-                        comments_template();
-                    } else {
-                        echo '<p class="font-paragraph italic">Reviews are currently closed.</p>';
-                    }
-                    ?>
+            if (comments_open()) {
+              comments_template();
+            } else {
+              echo '<p class="font-paragraph italic">Reviews are currently closed.</p>';
+            }
+            ?>
         </div>
       </div>
 

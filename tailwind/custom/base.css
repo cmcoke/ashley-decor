@@ -15,22 +15,131 @@ body {
 	@apply grid grid-cols-[minmax(6rem,1fr)_repeat(8,minmax(min-content,10.15625rem))_minmax(6rem,1fr)];
 }
 
-/* 1. The Container: Force it to be a single row with no gaps */
-.single-product form.cart {
-	@apply mt-11 inline-flex w-fit items-stretch gap-0! overflow-hidden rounded-xl border border-gray-300;
+/* Ensure the form container is a perfect row */
+.single-product-main form.cart {
+	@apply mt-11 inline-flex w-fit! items-stretch overflow-hidden rounded-xl border border-gray-300;
 }
 
-/* 2. The Quantity: Remove its own border and internal spacing */
-.single-product .quantity {
-	@apply m-0 flex items-center border-none bg-white px-4 py-3!;
-	/* We remove the border here because the parent form.cart provides it */
+/* Style the quantity wrapper to match your original px-4 py-3 */
+.single-product-main form.cart .quantity {
+	@apply m-0! flex items-center gap-4 border-none bg-white px-4 py-3;
 }
 
-.single-product .quantity input.qty {
-	@apply w-12 border-none p-0 text-center text-xl font-medium focus:ring-0!;
+/* Reset the buttons inside quantity so they don't have default browser styles */
+.single-product-main .quantity button {
+	@apply m-0 flex cursor-pointer items-center justify-center border-none bg-transparent p-0;
 }
 
-/* 3. The Button: Remove rounded corners so it sits flush against the quantity */
-.single-product .single_add_to_cart_button.button {
-	@apply bg-theme-black hover:bg-theme-orange m-0 flex h-auto items-center! rounded-none border-none px-8 py-3 font-medium text-white transition-colors duration-300;
+/* Style the text/number input in the middle */
+.single-product-main .quantity input.qty {
+	@apply w-10 border-none bg-transparent! p-0 text-center text-xl font-medium focus:ring-0;
+	-moz-appearance: textfield;
+}
+
+/* Style the Add to Cart button to be flush against the right */
+.single-product-main .single_add_to_cart_button {
+	@apply bg-theme-black hover:bg-theme-orange m-0 flex items-center! rounded-none border-none px-8 py-3 font-medium text-white transition-colors duration-300;
+}
+
+/* --- Mini Cart Drawer Styling --- */
+
+/* 1. The List and Items */
+.woocommerce-mini-cart {
+	@apply flex list-none flex-col gap-6 p-0!;
+}
+
+.woocommerce-mini-cart-item {
+	@apply relative flex items-center gap-6 border-b border-gray-100 pb-6!;
+}
+
+/* 2. Product Image */
+.woocommerce-mini-cart-item img {
+	@apply h-20 w-20 rounded-lg bg-gray-50! object-cover;
+}
+
+/* 3. Product Name & Quantity Info */
+.woocommerce-mini-cart-item a:not(.remove) {
+	@apply font-heading text-theme-black hover:text-theme-orange text-sm tracking-wide uppercase no-underline transition-colors!;
+}
+
+.woocommerce-mini-cart-item .quantity {
+	@apply font-paragraph text-theme-grey mt-1! block text-xs;
+}
+
+/* 4. The Remove (X) Button */
+.woocommerce-mini-cart-item .remove_from_cart_button {
+	@apply absolute -top-1 -left-1 z-10! flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white text-xs text-gray-400 transition-all hover:bg-red-50 hover:text-red-500;
+}
+
+/* 5. Subtotal Section */
+.woocommerce-mini-cart__total {
+	@apply border-theme-black font-heading mt-8 flex items-center justify-between border-t-2 pt-6 tracking-widest! uppercase;
+}
+
+.woocommerce-mini-cart__total .amount {
+	@apply text-theme-orange text-xl font-bold!;
+}
+
+/* 6. Action Buttons (View Cart & Checkout) */
+.woocommerce-mini-cart__buttons {
+	@apply mt-8! flex flex-col gap-3;
+}
+
+.woocommerce-mini-cart__buttons .button {
+	@apply font-paragraph w-full py-4 text-center tracking-widest uppercase transition-all duration-300!;
+}
+
+/* View Cart Button - Outlined */
+.woocommerce-mini-cart__buttons .button:not(.checkout) {
+	@apply border-theme-black text-theme-black hover:bg-theme-black border hover:text-white!;
+}
+
+/* Checkout Button - Solid */
+.woocommerce-mini-cart__buttons .button.checkout {
+	@apply bg-theme-black hover:bg-theme-orange! text-white;
+}
+
+/* Empty Cart State */
+.woocommerce-mini-cart__empty-message {
+	@apply font-paragraph text-theme-grey py-12! text-center;
+}
+
+/* Container for the mini cart plus/minus */
+.mini-cart-qty .quantity {
+	@apply inline-flex h-8 items-center overflow-hidden rounded-lg border border-gray-200 bg-white!;
+}
+
+.mini-cart-qty .qty-btn {
+	@apply h-full cursor-pointer border-none bg-transparent px-2 transition-colors! hover:bg-gray-50;
+}
+
+.mini-cart-qty input.qty {
+	@apply w-8 border-none bg-transparent! p-0 text-center text-sm font-bold focus:ring-0;
+}
+
+/* Hide the WooCommerce Label that breaks the row */
+.quantity label.screen-reader-text {
+	display: none!;
+}
+
+/* Ensure mini-cart inputs are clean */
+.mini-cart-qty .quantity {
+	@apply flex h-9 w-fit! items-center overflow-hidden rounded-lg border border-gray-200 bg-white;
+}
+
+.mini-cart-qty .quantity input.qty {
+	@apply w-8 border-none bg-transparent p-0 text-center text-sm font-bold focus:ring-0!;
+	appearance: textfield;
+	-moz-appearance: textfield;
+}
+
+/* Remove default browser arrows */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.mini-cart-qty .qty-btn img {
+	@apply h-[1rem]! w-[1rem];
 }
