@@ -44,7 +44,7 @@ while (have_posts()) : the_post();
 
         <div class="flex gap-3 items-center">
           <?php if ($product->get_rating_count() > 0) : ?>
-          <div class="text-theme-orange star-rating-styled">
+          <div class="product-rating-wrapper">
             <?php echo wc_get_rating_html($product->get_average_rating()); ?>
           </div>
           <span class="font-paragraph text-sm text-gray-500">
@@ -86,12 +86,12 @@ while (have_posts()) : the_post();
 
     <div class="px-4 col-start-1 col-end-11 lg:col-start-2 lg:col-end-10">
       <div class="flex gap-10">
-        <button id="tab-info-btn"
-          class="font-paragraph text-theme-orange text-[clamp(1.125rem,1rem_+_0.5vw,1.5rem)] border-b-2 border-theme-orange pb-2 transition-all">
+        <button type="button" id="tab-info-btn"
+          class="tab-btn font-paragraph text-theme-orange text-[clamp(1.125rem,1rem_+_0.5vw,1.5rem)] border-b-2 border-theme-orange pb-2 transition-all cursor-pointer">
           Product Information
         </button>
-        <button id="tab-reviews-btn"
-          class="font-paragraph text-theme-grey text-[clamp(1.125rem,1rem_+_0.5vw,1.5rem)] pb-2 hover:text-theme-orange transition-all">
+        <button type="button" id="tab-reviews-btn"
+          class="tab-btn font-paragraph text-theme-grey text-[clamp(1.125rem,1rem_+_0.5vw,1.5rem)] pb-2 hover:text-theme-orange transition-all cursor-pointer">
           Reviews (<?php echo $product->get_review_count(); ?>)
         </button>
       </div>
