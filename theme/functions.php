@@ -292,3 +292,64 @@ function ashley_decor_custom_star_rating($html, $rating, $count)
 
   return $html;
 }
+
+/**
+ * Custom Callback for Product Reviews (Comment List)
+ * This handles how reviews look AFTER they are submitted and approved.
+ */
+function woocommerce_comments($comment, $args, $depth)
+{
+?>
+<li <?php comment_class('review-item'); ?> id="li-comment-<?php comment_ID(); ?>">
+  <div id="comment-<?php comment_ID(); ?>" class="comment_container">
+    <div class="comment-text">
+      <?php
+        // 1. Get the rating directly from the database
+        $rating = intval(get_comment_meta($comment->comment_ID, 'rating', true));
+
+        // 2. Output the HTML directly. 
+        // DO NOT use wc_get_rating_html($rating) here, as it causes the 10-star bug.
+        if ($rating > 0) :
+          $percentage = ($rating / 5) * 100; ?>
+      <div class="star-rating mb-2" title="Rated <?php echo esc_attr($rating); ?> out of 5">
+        <span style="width:<?php echo esc_attr($percentage); ?>%"></span>
+      </div>
+      <?php endif; ?>
+
+      <p class="meta">
+        <strong class="woocommerce-review__author"><?php comment_author(); ?></strong>
+        <?php if ('0' === $comment->comment_approved) : ?>
+        <em class="text-theme-orange block text-xs italic">
+          <?php esc_html_e('Your review is awaiting approval', 'woocommerce'); ?>
+        </em>
+        <?php endif; ?>
+        <time class="woocommerce-review__published-date" datetime="<?php echo get_comment_date('c'); ?>">
+          <?php echo get_comment_date(wc_date_format()); ?>
+        </time>
+      </p>
+
+      <div class="description font-paragraph text-theme-grey">
+        <?php comment_text(); ?>
+      </div>
+    </div>
+  </div>
+</li>
+<?php
+}
+
+/**
+ * Prevent WooCommerce from injecting duplicate stars into the comment form
+ */
+add_filter('woocommerce_product_review_comment_form_args', 'ashley_decor_remove_default_stars', 20);
+
+function ashley_decor_remove_default_stars($args)
+{
+  // We already added the 'Your rating' stars manually in single-product-reviews.php
+  // Setting this to false prevents the duplicate injection.
+  $args['format'] = '';
+  return $args;
+}
+
+// Remove the default WooCommerce star output from the review list 
+// so only our custom callback handles it.
+remove_action('woocommerce_review_before_comment_meta', 'woocommerce_review_display_rating', 10);

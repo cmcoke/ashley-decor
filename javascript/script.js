@@ -1,5 +1,5 @@
 /**
- * Front-end JavaScript - Unified Quantity & Cart Logic
+ * Front-end JavaScript - Unified Quantity, Cart & Review Logic
  */
 
 /* global jQuery, ashleyData */
@@ -30,13 +30,12 @@
 		$(document).on('click', '#close-cart, #cart-overlay', closeCart);
 
 		// --- 2. AJAX Cart Update ---
-		let isUpdating = false; // Prevents multiple simultaneous requests
+		let isUpdating = false;
 
 		function updateCartQuantity(key, quantity) {
 			if (isUpdating) return;
 			isUpdating = true;
 
-			// Add a slight fade to show it's working
 			$('#mini-cart-content').css('opacity', '0.5');
 
 			$.ajax({
@@ -48,7 +47,6 @@
 					quantity: quantity,
 				},
 				success: function (response) {
-					// This tells WooCommerce to look at the fragments and update the HTML
 					$(document.body).trigger('added_to_cart', [
 						response.fragments,
 						response.cart_hash,
@@ -89,7 +87,6 @@
 			});
 		}
 
-		// --- New: Handle "Remove" link click via AJAX ---
 		$(document).on('click', '.remove-item-link', function (e) {
 			e.preventDefault();
 			const itemKey = $(this).attr('data-item-key');
@@ -110,21 +107,17 @@
 			let val = parseInt($input.val()) || 0;
 			let newVal = $btn.hasClass('m-btn') ? val - 1 : val + 1;
 
-			// Logic for Mini-Cart
 			if (itemKey) {
 				if (newVal >= 0) {
 					updateCartQuantity(itemKey, newVal);
 				}
-			}
-			// Logic for Single Product Page
-			else {
+			} else {
 				if (newVal >= 1) {
 					$input.val(newVal).trigger('change');
 				}
 			}
 		});
 
-		// MutationObserver for Mini Cart
 		const cartObserver = new MutationObserver(function () {
 			initQuantityButtons();
 		});
@@ -171,25 +164,30 @@
 
 		// --- 6. Star Rating Interaction ---
 		$(document).on('click', '.stars span a', function (e) {
+			// Prevent WC default logic and bubbling
 			e.preventDefault();
+			e.stopImmediatePropagation();
+
 			const $star = $(this);
-			const $parent = $star.closest('.stars');
+			const $container = $star.closest('.stars');
 
-			$star.addClass('active').siblings('a').removeClass('active');
-			$parent.addClass('has-active');
+			// Extract numeric value from class (e.g., 'star-4' becomes '4')
+			const classList = $star.attr('class').split(/\s+/);
+			const starClass = classList.find((cls) => cls.startsWith('star-'));
 
-			const val = $star.text().replace(/[^0-9]/g, '');
-			$('#rating').val(val).trigger('change');
-		});
+			if (starClass) {
+				const ratingValue = starClass.replace('star-', '');
 
-		$(document).on('change', '#rating', function () {
-			const val = $(this).val();
-			if (val) {
-				$('.stars span a.star-' + val)
-					.addClass('active')
-					.siblings('a')
-					.removeClass('active');
+				// Update hidden WC select field
+				$('#rating').val(ratingValue).trigger('change');
+
+				console.log('Review Rating Set to: ' + ratingValue);
 			}
+
+			// Visual feedback
+			$('.stars span a').removeClass('active');
+			$star.addClass('active');
+			$container.addClass('has-active');
 		});
-	}); // End Document Ready
+	});
 })(jQuery);

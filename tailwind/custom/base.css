@@ -42,22 +42,24 @@ body {
 }
 
 /* --- Interactive Review Form Stars --- */
-
 .stars span {
 	/* Row-reverse allows the ~ selector to target stars to the "left" of the cursor */
 	@apply flex flex-row-reverse justify-end gap-1;
 }
 
 .stars span a {
-	@apply relative inline-block h-[1em] w-[1em] overflow-hidden text-2xl whitespace-nowrap text-transparent;
+	/* Hide the text number but keep the star visible */
+	@apply relative inline-block h-[1em] w-[1em] overflow-hidden indent-[-999em] text-2xl whitespace-nowrap text-transparent;
 }
 
 .stars span a::before {
+	/* The actual star character */
 	content: "★";
 	@apply absolute top-0 left-0 cursor-pointer indent-[0] text-gray-300 transition-colors duration-200;
 }
 
 /* Color stars orange on hover or when 'active' class is applied via JS */
+/* The ~ selector highlights all preceding siblings in the DOM (which appear to the left) */
 .stars span a:hover::before,
 .stars span a:hover ~ a::before,
 .stars span a.active::before,
@@ -185,4 +187,12 @@ input::-webkit-inner-spin-button {
 
 .remove-item-link {
 	@apply hover:text-theme-orange cursor-pointer text-[10px] font-bold tracking-widest uppercase no-underline transition-colors;
+}
+
+.stars span a {
+	@apply indent-[-999em] before:indent-[0] before:content-["★"];
+	@apply relative inline-block h-[1em] w-[1em] overflow-hidden text-2xl whitespace-nowrap text-transparent;
+}
+.stars span a::before {
+	@apply absolute top-0 left-0 cursor-pointer text-gray-300 transition-colors duration-200;
 }
