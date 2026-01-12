@@ -42,18 +42,16 @@ while (have_posts()) : the_post();
           <?php the_title(); ?>
         </h1>
 
+        <?php if ($product->get_rating_count() > 0) : ?>
         <div class="flex gap-3 items-center">
-          <?php if ($product->get_rating_count() > 0) : ?>
-          <div class="product-rating-wrapper">
-            <?php echo wc_get_rating_html($product->get_average_rating()); ?>
-          </div>
+          <?php echo wc_get_rating_html($product->get_average_rating(), $product->get_rating_count()); ?>
           <span class="font-paragraph text-sm text-gray-500">
             (<?php echo $product->get_review_count(); ?> Reviews)
           </span>
-          <?php else : ?>
-          <span class="font-paragraph text-sm italic text-gray-400">No reviews yet</span>
-          <?php endif; ?>
         </div>
+        <?php else : ?>
+        <span class="font-paragraph text-sm italic text-gray-400">No reviews yet</span>
+        <?php endif; ?>
 
         <div class="font-heading text-theme-orange text-3xl font-semibold">
           <?php echo $product->get_price_html(); ?>
@@ -110,7 +108,7 @@ while (have_posts()) : the_post();
         <div class="reviews-container">
           <?php
             if (comments_open()) {
-              comments_template();
+              comments_template('/woocommerce/single-product-reviews.php');
             } else {
               echo '<p class="font-paragraph italic">Reviews are currently closed.</p>';
             }

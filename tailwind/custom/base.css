@@ -1,10 +1,14 @@
 /**
- * Custom styles to immediately follow Tailwind’s `base` layer
- * Theme: Ashley Decor
+ * Ashley Decor Base Styles
+ * Consolidated & Cleaned
  */
 
 body {
 	@apply bg-background text-foreground font-sans;
+}
+
+#reviews #comments {
+	margin-inline: 0;
 }
 
 /* --- Layout Wrapper --- */
@@ -12,19 +16,13 @@ body {
 	@apply grid grid-cols-[minmax(1rem,1fr)_repeat(8,minmax(min-content,10.15625rem))_minmax(1rem,1fr)] lg:grid-cols-[minmax(6rem,1fr)_repeat(8,minmax(min-content,10.15625rem))_minmax(6rem,1fr)];
 }
 
-/* --- Single Product Page Actions --- */
-
-/* Add to Cart Form Container */
+/* --- 1. Single Product Page Quantity & Add to Cart --- */
 .single-product-main form.cart {
 	@apply mt-11 inline-flex w-fit! items-stretch overflow-hidden rounded-xl border border-gray-300;
 }
 
 .single-product-main form.cart .quantity {
 	@apply m-0! flex items-center gap-4 border-none bg-white px-4 py-3;
-}
-
-.single-product-main .quantity button {
-	@apply m-0 flex cursor-pointer items-center justify-center border-none bg-transparent p-0;
 }
 
 .single-product-main .quantity input.qty {
@@ -36,163 +34,162 @@ body {
 	@apply bg-theme-black hover:bg-theme-orange m-0 flex items-center! rounded-none border-none px-8 py-3 text-sm font-medium tracking-widest text-white uppercase transition-colors duration-300;
 }
 
-/* Hide WooCommerce Screen Reader Labels */
-.quantity label.screen-reader-text {
-	@apply hidden!;
-}
+/* --- 2. Mini Cart Drawer Styling --- */
 
-/* --- Interactive Review Form Stars --- */
-.stars span {
-	/* Row-reverse allows the ~ selector to target stars to the "left" of the cursor */
-	@apply flex flex-row-reverse justify-end gap-1;
-}
-
-.stars span a {
-	/* Hide the text number but keep the star visible */
-	@apply relative inline-block h-[1em] w-[1em] overflow-hidden indent-[-999em] text-2xl whitespace-nowrap text-transparent;
-}
-
-.stars span a::before {
-	/* The actual star character */
-	content: "★";
-	@apply absolute top-0 left-0 cursor-pointer indent-[0] text-gray-300 transition-colors duration-200;
-}
-
-/* Color stars orange on hover or when 'active' class is applied via JS */
-/* The ~ selector highlights all preceding siblings in the DOM (which appear to the left) */
-.stars span a:hover::before,
-.stars span a:hover ~ a::before,
-.stars span a.active::before,
-.stars span a.active ~ a::before {
-	@apply text-[#ff9f1c]!;
-}
-
-/* --- Display Rating (For existing reviews) --- */
-
-.star-rating {
-	@apply relative inline-block overflow-hidden leading-none tracking-[2px] whitespace-nowrap text-gray-300;
-	font-family: Arial, sans-serif;
-	width: 5.4em;
-	font-size: 16px;
-}
-
-.star-rating::before {
-	content: "★★★★★";
-	@apply block;
-}
-
-.star-rating span {
-	@apply absolute top-0 left-0 overflow-hidden whitespace-nowrap text-[#ff9f1c];
-	height: 100%;
-}
-
-.star-rating span::before {
-	content: "★★★★★";
-	@apply absolute top-0 left-0;
-}
-
-/* --- Review List & Form Styling --- */
-
-/* Style the Rating Dropdown (Fallback) */
-#rating {
-	@apply focus:ring-theme-orange focus:border-theme-orange w-full rounded-md border-gray-300 bg-white p-3;
-}
-
-.commentlist .star-rating {
-	@apply mb-2 block;
-}
-
-.commentlist .meta {
-	@apply font-heading mb-1 block text-sm text-gray-900;
-}
-
-.commentlist .meta time {
-	@apply font-paragraph mb-3 block text-xs tracking-widest text-gray-400 uppercase;
-}
-
-.commentlist .description {
-	@apply font-paragraph text-theme-grey leading-relaxed;
-}
-
-.woocommerce-Reviews #comments {
-	margin-inline: 0;
-}
-
-/* --- Mini Cart Drawer Styling --- */
-
-.woocommerce-mini-cart {
-	@apply flex list-none flex-col gap-6 p-0!;
-}
-
+/* Individual Item Container */
 .woocommerce-mini-cart-item {
-	@apply relative flex items-center gap-6 border-b border-gray-100 pb-6!;
+	@apply relative mb-6! flex items-center gap-6 border-b border-gray-100 pb-6;
 }
 
-.woocommerce-mini-cart-item img {
-	@apply h-20 w-20 rounded-lg bg-gray-50! object-cover;
+/* The Remove (X) Button - Positioned over product image */
+.remove-item-link {
+	@apply hover:bg-theme-orange absolute -top-2 -left-2 z-50 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white text-black shadow-md transition-all! hover:text-white;
+	text-indent: 0 !important;
+	font-size: 0 !important;
 }
 
-.woocommerce-mini-cart-item a:not(.remove) {
-	@apply font-heading text-theme-black hover:text-theme-orange text-sm tracking-wide uppercase no-underline transition-colors!;
+.remove-item-link::before {
+	content: "×";
+	@apply flex h-full w-full items-center justify-center font-sans text-lg leading-none!;
 }
 
-.mini-cart-item-meta {
-	@apply flex flex-col gap-2;
-}
-
+/* Quantity Stepper (Container) */
 .mini-cart-qty .quantity {
-	@apply flex h-9 w-fit! items-center overflow-hidden rounded-lg border border-gray-200 bg-white;
+	@apply flex items-center overflow-hidden rounded-md border border-gray-200 bg-white!;
+	width: fit-content;
+	height: 32px;
 }
 
-.mini-cart-qty .quantity input.qty {
-	@apply w-8 border-none bg-transparent p-0 text-center text-sm font-bold focus:ring-0!;
-	-moz-appearance: textfield;
+/* The Plus/Minus Buttons */
+.mini-cart-qty .qty-btn {
+	@apply flex h-full w-8 cursor-pointer items-center justify-center border-none bg-gray-50 transition-colors hover:bg-gray-100!;
 }
 
 .mini-cart-qty .qty-btn img {
-	@apply h-[1rem]! w-[1rem];
+	@apply block! h-2.5 w-2.5 opacity-70!;
+	max-width: none !important;
 }
 
-/* Mini Cart Totals & Buttons */
-.woocommerce-mini-cart__total {
-	@apply border-theme-black font-heading mt-8 flex items-center justify-between border-t-2 pt-6 tracking-widest! uppercase;
+/* The Quantity Input (Number) - Spinners Removed Here */
+.quantity input.qty {
+	@apply h-full w-10 border-x border-y-0 border-gray-200 p-0 text-center text-sm font-bold text-gray-900 focus:ring-0!;
+	appearance: none !important;
+	-webkit-appearance: none !important;
+	-moz-appearance: textfield !important;
+	box-shadow: none !important;
 }
 
-.woocommerce-mini-cart__total .amount {
-	@apply text-theme-orange text-xl font-bold!;
+/* Final browser-specific spinner removal */
+.quantity input::-webkit-outer-spin-button,
+.quantity input::-webkit-inner-spin-button {
+	-webkit-appearance: none !important;
+	margin: 0 !important;
 }
 
-.woocommerce-mini-cart__buttons {
-	@apply mt-8! flex flex-col gap-3;
-}
-
+/* Mini-Cart Bottom Buttons */
 .woocommerce-mini-cart__buttons .button {
-	@apply font-paragraph w-full py-4 text-center tracking-widest uppercase transition-all duration-300!;
+	@apply block w-full rounded-md! py-4 text-center text-sm font-bold tracking-widest uppercase transition-all duration-300;
 }
 
 .woocommerce-mini-cart__buttons .button:not(.checkout) {
-	@apply border-theme-black text-theme-black hover:bg-theme-black border hover:text-white!;
+	@apply hover:border-theme-black hover:bg-theme-black mb-2! border border-gray-200 text-gray-800 hover:text-white;
 }
 
 .woocommerce-mini-cart__buttons .button.checkout {
 	@apply bg-theme-black hover:bg-theme-orange! text-white;
 }
 
-/* --- Utilities --- */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-	@apply m-0;
-	-webkit-appearance: none;
-}
+/* --- 3. Product Reviews & Star Ratings --- */
 
-.remove-item-link {
-	@apply hover:text-theme-orange cursor-pointer text-[10px] font-bold tracking-widest uppercase no-underline transition-colors;
+/* Star Interaction Row */
+.comment-form-rating .stars span {
+	display: flex !important;
+	flex-direction: row;
+	justify-content: flex-start;
+	gap: 0.25rem;
 }
 
 .stars span a {
-	@apply indent-[-999em] before:indent-[0] before:content-["★"];
-	@apply relative inline-block h-[1em] w-[1em] overflow-hidden text-2xl whitespace-nowrap text-transparent;
+	@apply relative inline-block h-[1.5rem] w-[1.5rem] overflow-hidden indent-[-999em] text-2xl whitespace-nowrap text-transparent!;
 }
+
 .stars span a::before {
-	@apply absolute top-0 left-0 cursor-pointer text-gray-300 transition-colors duration-200;
+	content: "★" !important;
+	@apply absolute top-0 left-0 cursor-pointer indent-[0] text-gray-300 transition-colors duration-200;
+}
+
+.stars span a:hover::before,
+.stars span a.active::before {
+	@apply text-theme-orange!;
+}
+
+/* Star Display (Static) */
+.star-rating {
+	@apply relative inline-block overflow-hidden whitespace-nowrap text-gray-300;
+	font-family: Arial, sans-serif; /* Standard font for ★ */
+	width: 80px; /* Fixed width for 5 stars */
+	height: 16px; /* Match font size */
+	font-size: 16px;
+	line-height: 1;
+	letter-spacing: 0;
+}
+
+/* Background Stars (Gray) */
+.star-rating::before {
+	content: "★★★★★";
+	@apply block;
+}
+
+/* Foreground Stars (Orange) */
+.star-rating span {
+	@apply text-theme-orange absolute top-0 left-0 overflow-hidden;
+	height: 100%;
+	display: block;
+}
+
+/* This is the key: The content inside the span MUST have a fixed width 
+   equal to the parent so it doesn't "squish" when the span narrows */
+.star-rating span::before {
+	content: "★★★★★";
+	@apply block;
+	width: 80px; /* IMPORTANT: Must match .star-rating width exactly */
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+/* Clean up any possible nesting from plugins */
+.star-rating .star-rating {
+	display: contents;
+}
+
+.star-rating .star-rating::before {
+	/* display: none !important; */
+}
+
+/* Review Form Details */
+#rating {
+	@apply focus:ring-theme-orange focus:border-theme-orange w-full rounded-md border-gray-300 bg-white p-3;
+}
+
+.commentlist .meta {
+	@apply font-heading mb-1 block text-sm text-gray-900;
+}
+.commentlist .meta time {
+	@apply font-paragraph mb-3 block text-xs tracking-widest text-gray-400 uppercase;
+}
+.commentlist .description {
+	@apply font-paragraph text-theme-grey leading-relaxed;
+}
+
+/* --- 4. Utilities --- */
+.quantity label.screen-reader-text {
+	@apply hidden!;
+}
+#reviews #comments {
+	margin-inline: 0;
+}
+
+.qty-btn img {
+	max-width: 1rem !important;
 }
