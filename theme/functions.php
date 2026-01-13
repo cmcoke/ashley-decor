@@ -92,46 +92,38 @@ function ashley_decor_scripts()
 add_action('wp_enqueue_scripts', 'ashley_decor_scripts');
 
 /**
- * AJAX Update Cart Quantity - Persistent Session Version
+ * AJAX Update Cart Quantity
  */
 function ashley_decor_qty_cart()
 {
-  // 1. Verify Nonce
   check_ajax_referer('ashley-ajax-nonce', 'security');
 
-  // 2. IMPORTANT: Manually initialize the session if it's missing (Fixes cart_count: 0)
-  if (! is_user_logged_in() && ! WC()->session->has_session()) {
-    WC()->session->set_customer_session_cookie(true);
+  if (!defined('WOOCOMMERCE_CART')) {
+    define('WOOCOMMERCE_CART', true);
   }
 
-  // 3. Force cart to load from the database/session
+  // Ensure WC cart is loaded
   if (is_null(WC()->cart)) {
     wc_load_cart();
   }
+  WC()->cart->get_cart_from_session();
 
-  // Explicitly calculate totals to ensure session synchronization
-  WC()->cart->get_cart();
-
-  // 4. Get and sanitize data
   $cart_item_key = isset($_POST['hash']) ? sanitize_text_field($_POST['hash']) : '';
   $quantity      = isset($_POST['quantity']) ? intval($_POST['quantity']) : 0;
 
-  // 5. Validation Check
-  $cart_item = WC()->cart->get_cart_item($cart_item_key);
-
-  if (! $cart_item) {
-    wp_send_json_error(array(
-      'message'       => 'Invalid cart item key.',
-      'received_hash' => $cart_item_key,
-      'cart_count'    => WC()->cart->get_cart_contents_count(), // If this is still 0, the session load failed
-      'total_items'   => count(WC()->cart->get_cart())
-    ));
+  if ($cart_item_key) {
+    if ($quantity <= 0) {
+      WC()->cart->remove_cart_item($cart_item_key);
+    } else {
+      WC()->cart->set_quantity($cart_item_key, $quantity);
+    }
+    WC()->cart->calculate_totals();
   }
 
-  // 6. Perform the update
-  WC()->cart->set_quantity($cart_item_key, $quantity);
-
-  wp_send_json_success();
+  // This triggers the 'woocommerce_add_to_cart_fragments' filter 
+  // and sends the HTML for both the mini-cart and your header icon.
+  WC_AJAX::get_refreshed_fragments();
+  wp_die();
 }
 add_action('wp_ajax_qty_cart', 'ashley_decor_qty_cart');
 add_action('wp_ajax_nopriv_qty_cart', 'ashley_decor_qty_cart');
@@ -208,3 +200,42 @@ function ashley_decor_custom_star_rating($html, $rating, $count)
 
 // Remove default WooCommerce star output to avoid duplicates
 remove_action('woocommerce_review_before_comment_meta', 'woocommerce_review_display_rating', 10);
+
+// Enable AJAX add to cart on single product pages
+add_filter('woocommerce_product_single_add_to_cart_text', 'ashley_decor_ajax_single_add_to_cart_class');
+function ashley_decor_ajax_single_add_to_cart_class($text)
+{
+  // This is a bit of a hack to add the class, or you can use a plugin/custom JS
+  return $text;
+}
+
+/**
+ * Add Cart Icon to fragments so it updates via AJAX
+ */
+add_filter('woocommerce_add_to_cart_fragments', 'ashley_decor_cart_count_fragments', 10, 1);
+function ashley_decor_cart_count_fragments($fragments)
+{
+  ob_start();
+?>
+<a class="cart-customlocation block" href="<?php echo esc_url(wc_get_cart_url()); ?>"
+  title="<?php _e('View your shopping cart', 'ashley_decor'); ?>">
+  <div class="relative inline-block">
+    <img src="<?php echo get_theme_file_uri('images/shopping-bag.webp') ?>" alt="shopping bag"
+      class="max-w-[1.5rem] h-auto cursor-pointer">
+    <?php
+      $count = WC()->cart->get_cart_contents_count();
+      if ($count > 0) :
+        $display_count = ($count > 10) ? '10+' : $count;
+      ?>
+    <span
+      class="absolute -bottom-3 -right-3 bg-theme-orange text-white text-[10px] font-bold px-1 py-0.5 rounded-full leading-none min-w-[22px] h-[22px] flex items-center justify-center border-2 border-white">
+      <?php echo $display_count; ?>
+    </span>
+    <?php endif; ?>
+  </div>
+</a>
+<?php
+  $fragments['a.cart-customlocation'] = ob_get_clean();
+
+  return $fragments;
+}

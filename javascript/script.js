@@ -31,11 +31,8 @@
 
 		$(document).on('click', '#close-cart, #cart-overlay', closeCart);
 
-		// ESC key to close drawer
 		$(document).on('keydown', function (e) {
-			if (e.key === 'Escape') {
-				closeCart();
-			}
+			if (e.key === 'Escape') closeCart();
 		});
 
 		// --- 2. AJAX Cart Update Logic ---
@@ -53,15 +50,20 @@
 				data: {
 					action: 'qty_cart',
 					hash: key,
-					quantity: quantity, // Explicit key:value
+					quantity: quantity,
 					security: ashleyData.nonce,
 				},
 				success: function (response) {
-					if (response.success) {
-						// Refresh fragments (updates the mini-cart HTML)
+					// response.fragments contains the updated HTML for the cart icon AND the mini-cart
+					if (response && response.fragments) {
+						$.each(response.fragments, function (key, value) {
+							$(key).replaceWith(value);
+						});
+
+						// IMPORTANT: Re-run the button injection after the HTML is replaced
+						initQuantityButtons();
+
 						$(document.body).trigger('wc_fragment_refresh');
-					} else {
-						console.error('Cart update failed:', response.data);
 					}
 				},
 				complete: function () {
@@ -75,8 +77,6 @@
 		function initQuantityButtons() {
 			$('.quantity').each(function () {
 				const $container = $(this);
-
-				// Skip if buttons already exist
 				if ($container.find('.qty-btn').length > 0) return;
 
 				const $input = $container.find('input.qty');
@@ -84,7 +84,6 @@
 
 				$container.find('.screen-reader-text').hide();
 
-				// Build image paths from localized theme URL
 				const baseUrl = ashleyData.themeUrl.replace(/\/$/, '');
 				const minusImg = baseUrl + '/images/minus.png';
 				const plusImg = baseUrl + '/images/plus.png';
@@ -122,12 +121,12 @@
 			let newVal = $btn.hasClass('m-btn') ? val - 1 : val + 1;
 
 			if (itemKey) {
-				// Mini-cart logic (AJAX)
+				// Mini-cart logic (Quantity 0 will trigger removal in PHP)
 				if (newVal >= 0) {
 					updateCartQuantity(itemKey, newVal);
 				}
 			} else {
-				// Single product page logic (Manual Input)
+				// Single product page logic
 				if (newVal >= 1) {
 					$input.val(newVal).trigger('change');
 				}
@@ -137,17 +136,19 @@
 		// Remove item link click
 		$(document).on('click', '.remove-item-link', function (e) {
 			e.preventDefault();
-			const itemKey =
-				$(this).attr('data-cart_item_key') ||
-				$(this).attr('data-item-key');
+			const itemKey = $(this).attr('data-cart_item_key');
 			if (itemKey) {
 				updateCartQuantity(itemKey, 0);
 			}
 		});
 
+		// Open drawer on successful Add to Cart
+		$(document.body).on('added_to_cart', function () {
+			openCart();
+		});
+
 		// --- 5. Observers & Initialization ---
 
-		// Watch for mini-cart updates to re-initialize buttons
 		$(document.body).on(
 			'updated_wc_div added_to_cart updated_cart_totals wc_fragments_refreshed',
 			function () {
@@ -155,20 +156,9 @@
 			}
 		);
 
-		// Mutation Observer as a fallback for the drawer
-		const miniCartNode = document.getElementById('cart-drawer');
-		if (miniCartNode) {
-			const cartObserver = new MutationObserver(initQuantityButtons);
-			cartObserver.observe(miniCartNode, {
-				childList: true,
-				subtree: true,
-			});
-		}
-
-		// Initial run
 		initQuantityButtons();
 
-		// --- 6. Single Product Tabs ---
+		// --- 6. Tabs & Star Ratings (Remains Same) ---
 		$(document).on('click', '#tab-info-btn, #tab-reviews-btn', function () {
 			const isReviews = $(this).attr('id') === 'tab-reviews-btn';
 			$('#tab-info-btn')
@@ -187,19 +177,17 @@
 			$('#reviews-panel').toggleClass('hidden', !isReviews);
 		});
 
-		// --- 7. Star Rating Interaction ---
 		$(document).on('click', '.stars a', function (e) {
 			const $star = $(this);
-			const $wrapper = $star.closest('.comment-form-rating');
-			const $select = $wrapper.find('select#rating');
-
+			const $select = $star
+				.closest('.comment-form-rating')
+				.find('select#rating');
 			const classMatch = $star.attr('class').match(/star-(\d+)/);
 			const ratingValue = classMatch
 				? classMatch[1]
 				: $star.text().trim().charAt(0);
 
 			$select.val(ratingValue).trigger('change');
-
 			$star.addClass('active').prevAll('a').addClass('active');
 			$star.nextAll('a').removeClass('active');
 			$star.closest('.stars').addClass('selected');
