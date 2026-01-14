@@ -12,7 +12,7 @@
 
 <footer class="wrapper lg:items-center pb-11">
 
-  <div class="col-start-1 col-end-11 lg:col-start-2 lg:col-end-5">
+  <div class="col-start-1 col-end-11 mt-11 lg:col-start-2 lg:col-end-5 lg:mt-0">
     <h5 class="font-paragraph text-gray-400 text-center mb-3 text-xl">Accepted Payments</h5>
     <img src="<? echo get_theme_file_uri('/images/cards.webp') ?>" alt="payment cards" class="block m-auto">
   </div>

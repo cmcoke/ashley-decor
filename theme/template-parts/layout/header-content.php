@@ -13,14 +13,14 @@
 <header class="h-[100px] wrapper items-center">
 
   <!-- logo -->
-  <div class="col-start-1 col-end-2 place-self-center">
+  <div class="col-start-2 col-end-3 lg:col-start-1 lg:col-end-2 place-self-center">
     <a href="<?php echo esc_url(site_url()); ?>">
       <img src="<?php echo get_theme_file_uri('images/logo.webp') ?>" alt="logo" class="max-w-[5rem] h-auto">
     </a>
   </div>
 
   <!-- cart -->
-  <div class="col-start-10 col-end-11 place-self-center">
+  <div class="col-start-9 col-end-10 lg:col-start-10 lg:col-end-11 place-self-center">
     <a class="cart-customlocation block" href="<?php echo esc_url(wc_get_cart_url()); ?>"
       title="<?php _e('View your shopping cart', 'ashley_decor'); ?>">
       <div class="relative inline-block">

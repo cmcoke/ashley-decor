@@ -1,4 +1,18 @@
-<?php get_header(); ?>
+<?php
+
+// echo '<pre>';
+// print_r(get_field('product_url_link'));
+// echo '</pre>';
+// die();
+
+// echo '<pre>';
+// print_r(get_field('product_image'));
+// echo '</pre>';
+// die();
+
+get_header();
+
+?>
 
 <main>
 
@@ -9,21 +23,36 @@
 
       <div class="text-center">
 
-        <h1
-          class="font-heading text-[clamp(2.938rem,2.4559rem_+_2.4107vw,6.313rem)] text-theme-black leading-[2.813rem] px-[1rem] mb-[clamp(2.5rem,2.1429rem_+_1.7857vw,5rem)]">
-          The Wooden</h1>
+        <!-- Hero section title for the main product  -->
+        <?php
+        $product_name = get_field('product_name');
+        if ($product_name) {
+          echo '<h1 class="font-heading text-[clamp(2.938rem,2.4559rem_+_2.4107vw,6.313rem)] text-theme-black leading-[2.813rem] px-[1rem] mb-[clamp(2.5rem,2.1429rem_+_1.7857vw,5rem)]">' . esc_html($product_name) . '</h1>';
+        }
+        ?>
 
-        <a href="#" class="font-heading text-[1.125rem] relative inline-block pb-3
+        <!-- Hero section url link for the main product  -->
+        <?php
+        $product_url = get_field('product_url_link');
+
+        if ($product_url) : ?>
+        <a href="<?php echo esc_attr($product_url['url']); ?>"
+          target="<?php echo esc_attr($product_url['target'] ?: '_self'); ?>" rel="noopener" class="font-heading text-[1.125rem] relative inline-block pb-3
          after:content-[''] after:absolute after:left-0 after:bottom-0
          after:w-full after:h-[2px] after:bg-current hover:text-theme-orange transition-colors duration-300">
           Shop Now
         </a>
+        <?php endif; ?>
 
       </div>
 
-      <div>
-        <img src="<?php echo get_theme_file_uri('images/hero.webp') ?>" alt="main product">
-      </div>
+      <!-- Hero section image of the main product  -->
+      <?php
+      $product_image = get_field('product_image');
+      if (!empty($product_image)) : ?>
+      <img src="<?php echo esc_url($product_image['url']); ?>"
+        alt="<?php echo esc_attr($product_image['alt']) ?: 'Main product'; ?>" class="w-full h-auto">
+      <?php endif; ?>
 
     </div>
 
@@ -79,21 +108,21 @@
       }
   ?>
 
-      <div class="<?php echo $grid_classes; ?>">
-        <a href="<?php the_permalink(); ?>" class="relative block w-full h-full">
-          <?php
+  <div class="<?php echo $grid_classes; ?>">
+    <a href="<?php the_permalink(); ?>" class="relative block w-full h-full">
+      <?php
           if (has_post_thumbnail()) {
             the_post_thumbnail('full', ['class' => 'w-full h-full object-cover']);
           }
           ?>
-          <div class="absolute bottom-3 left-4">
-            <h5 class="font-heading font-bold uppercase text-[14px] tracking-[.2em]"><?php the_title(); ?></h5>
-            <span class="font-heading text-[14px] font-light text-theme-orange block">
-              <?php echo $product->get_price_html(); ?>
-            </span>
-          </div>
-        </a>
+      <div class="absolute bottom-3 left-4">
+        <h5 class="font-heading font-bold uppercase text-[14px] tracking-[.2em]"><?php the_title(); ?></h5>
+        <span class="font-heading text-[14px] font-light text-theme-orange block">
+          <?php echo $product->get_price_html(); ?>
+        </span>
       </div>
+    </a>
+  </div>
 
   <?php
       // 4. Close the wrapper every 3 products
